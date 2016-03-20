@@ -1,0 +1,126 @@
+//============================================================================
+// Go playing bot
+//============================================================================
+
+use std::fmt;
+use std::ops::Index;
+use std::ops::IndexMut;
+
+
+//----------------------------------------------------------------------------
+// Communication with Game Engine
+//----------------------------------------------------------------------------
+//
+// This should run in a separate thread (or even two), listening for commands
+// from the server, and replying with moves. In this way the engine can
+// do its thing, and not have to poll all the time.
+//
+//----------------------------------------------------------------------------
+
+
+
+
+
+//----------------------------------------------------------------------------
+// Board
+//----------------------------------------------------------------------------
+
+const SIDE: usize = 9;
+
+enum Piece {
+	EMPTY = 0,
+	BLACK = 1,
+	WHITE = 2
+}
+
+
+impl Piece {
+	fn from_square(upiece: u8) -> Option<Piece>
+	{
+		match upiece & 3u8 {
+			0 => Some(Piece::EMPTY),
+			1 => Some(Piece::BLACK),
+			2 => Some(Piece::WHITE),
+			_ => None
+		}
+	}
+}
+
+
+
+type Square = u8;
+
+struct Board
+{
+	square: [[Square; SIDE]; SIDE],
+}
+
+
+impl Default for Board {
+	fn default() -> Board {
+	   Board { square: [[0u8; SIDE]; SIDE] }
+	}
+}
+
+
+impl Index<(u32, u32)> for Board {
+  type Output = Square;
+
+  fn index(&self, _index: (u32, u32)) -> &Square {
+		&self.square[_index.0 as usize][_index.1 as usize]
+	}
+}
+
+impl IndexMut<(u32, u32)> for Board {
+  fn index_mut<'a>(&'a mut self, _index: (u32, u32)) -> &'a mut Square {
+	  return & mut self.square[_index.0 as usize][_index.1 as usize]; 
+  }
+}
+
+
+fn square_to_string(square: Square) -> &'static str {
+	match Piece::from_square(square) {
+		Some(Piece::EMPTY) => ".",
+		Some(Piece::BLACK) => "X",
+		Some(Piece::WHITE) => "O",
+		None => "#"
+	}
+}
+
+// Display
+impl fmt::Display for Board {	
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		for row in self.square.iter() {
+			for square in row.iter() {
+      	write!(f, "{} ", square_to_string(*square));
+			}
+			write!(f, "\n");
+		}
+		write!(f, "\n")
+  }
+}
+
+
+
+
+
+impl Board
+{
+	
+
+}
+
+
+//----------------------------------------------------------------------------
+// Main
+//----------------------------------------------------------------------------
+
+fn main() {
+  println!("\nGo Rust (v0.1)\n==============\n");
+	let mut board = Board::default();
+	println!("{}", board);
+	
+	board[(0,0)] = Piece::BLACK as u8;
+	
+	println!("{}", board);
+}

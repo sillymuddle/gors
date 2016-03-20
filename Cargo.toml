@@ -1,0 +1,6 @@
+[package]
+name = "gors"
+version = "0.1.0"
+authors = ["Charles Hill <nopaniers@hotmail.com>"]
+
+[dependencies]
